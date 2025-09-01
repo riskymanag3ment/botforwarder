@@ -26,8 +26,8 @@ This project is loosely based upon the concepts from [matkap](https://github.com
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/telegram-forwarder.git
-cd telegram-forwarder
+git clone https://github.com/riskymanag3ment/botforwarder
+cd botforwarder
 ```
 
 2. Install dependencies:
@@ -49,31 +49,31 @@ TELEGRAM_PHONE=your_phone_number
 ### Basic Message Forwarding
 
 ```bash
-python telegram_forwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890"
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890"
 ```
 
 ### Skip Already Processed Messages
 
 ```bash
-python telegram_forwarder.py --bot-token "123456789:AABBccDDee..." --channel "@channelname" --skip-existing
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "@channelname" --skip-existing
 ```
 
 ### Monitor for New Messages
 
 ```bash
-python telegram_forwarder.py --bot-token "123456789:AABBccDDee..." --channel "123456789" --monitor --monitor-interval 30
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "123456789" --monitor --monitor-interval 30
 ```
 
 ### Custom Output Directory
 
 ```bash
-python telegram_forwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --output-dir "./analysis_data"
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --output-dir "./analysis_data"
 ```
 
 ### Batch Processing
 
 ```bash
-python telegram_forwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --batch-size 50
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --batch-size 50
 ```
 
 ## Command Line Arguments
