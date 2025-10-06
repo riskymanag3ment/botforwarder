@@ -342,27 +342,10 @@ class TelegramForwarder:
         """Find the actual range of available messages"""
         self.log("🔍 Finding message range...")
 
-        # Try to find the highest message ID
-        high = self.last_message_id or 1000
-        low = 1
+        # Start from last known message ID or default
+        highest_id = self.last_message_id or max_search
 
-        # Binary search for highest available message
-        while low < high:
-            mid = (low + high + 1) // 2
-            content, status = self.forward_message(channel_id, mid)
-
-            if status == "success":
-                low = mid
-                self.log(f"✅ Message {mid} exists")
-            elif status == "not_found":
-                high = mid - 1
-                self.log(f"❌ Message {mid} not found")
-            else:
-                # On error, be conservative
-                high = mid - 1
-
-        highest_id = low if low > 0 else 1
-        self.log(f"📊 Detected message range: 1 to {highest_id}")
+        self.log(f"📊 Using message range: 1 to {highest_id}")
         return 1, highest_id
 
     async def forward_all_messages(self, skip_existing=True, batch_size=MAX_BATCH_SIZE):
