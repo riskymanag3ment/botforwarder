@@ -14,10 +14,11 @@ This project is loosely based upon the concepts from [matkap](https://github.com
 
 - **Command-line interface** for automated workflows
 - **Automatic session management** - authenticate once, reuse sessions
+- **Message range control** - specify start and end message IDs for targeted forwarding
 - **Rate limiting protection** with exponential backoff
 - **Batch processing** for large message volumes
 - **JSON output format** for structured data analysis
-- **Progress monitoring** and comprehensive logging
+- **Progress monitoring** and comprehensive logging with append mode
 - **Duplicate detection** to skip already processed messages
 - **Real-time monitoring** mode for ongoing analysis
 - **OTP authentication** with automatic session saving
@@ -76,6 +77,20 @@ python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234
 python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --batch-size 50
 ```
 
+### Forward Specific Message Range
+
+```bash
+# Forward messages 1000 to 2000
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --start-message-id 1000 --end-message-id 2000
+```
+
+### Start from Specific Message ID
+
+```bash
+# Forward all messages starting from ID 5000
+python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234567890" --start-message-id 5000
+```
+
 ## Command Line Arguments
 
 | Argument | Required | Description | Default |
@@ -84,6 +99,8 @@ python botforwarder.py --bot-token "123456789:AABBccDDee..." --channel "-1001234
 | `--channel` | ✅ | Channel/Chat ID to forward from | - |
 | `--output-dir` | ❌ | Output directory for messages | `captured_messages` |
 | `--skip-existing` | ❌ | Skip already processed messages | `True` |
+| `--start-message-id` | ❌ | Start forwarding from this message ID | `1` |
+| `--end-message-id` | ❌ | End forwarding at this message ID | Auto-detected |
 | `--monitor` | ❌ | Continue monitoring for new messages | `False` |
 | `--monitor-interval` | ❌ | Monitoring interval in seconds | `60` |
 | `--batch-size` | ❌ | Batch size for processing | `100` |

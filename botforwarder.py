@@ -27,11 +27,13 @@ RATE_LIMIT_BURST_DELAY = 30  # seconds to wait when hitting rate limits
 MAX_BATCH_SIZE = 100  # messages per batch
 
 class TelegramForwarder:
-    def __init__(self, bot_token, channel_id, output_dir="captured_messages"):
+    def __init__(self, bot_token, channel_id, output_dir="captured_messages", start_message_id=None, end_message_id=None):
         self.bot_token = self.parse_bot_token(bot_token)
         self.channel_id = channel_id
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
+        self.start_message_id = start_message_id
+        self.end_message_id = end_message_id
 
         # Telegram client setup
         self.api_id = int(os.getenv("TELEGRAM_API_ID", "0"))
@@ -342,11 +344,17 @@ class TelegramForwarder:
         """Find the actual range of available messages"""
         self.log("🔍 Finding message range...")
 
-        # Start from last known message ID or default
-        highest_id = self.last_message_id or max_search
+        # Start from user-specified message ID, or default to 1
+        start_id = self.start_message_id if self.start_message_id else 1
 
-        self.log(f"📊 Using message range: 1 to {highest_id}")
-        return 1, highest_id
+        # End at user-specified message ID, or last known message ID, or default
+        if self.end_message_id:
+            highest_id = self.end_message_id
+        else:
+            highest_id = self.last_message_id or max_search
+
+        self.log(f"📊 Using message range: {start_id} to {highest_id}")
+        return start_id, highest_id
 
     async def forward_all_messages(self, skip_existing=True, batch_size=MAX_BATCH_SIZE):
         """Forward all messages from the channel"""
@@ -469,13 +477,15 @@ async def main():
     parser.add_argument("--channel", required=True, help="Channel/Chat ID to forward from")
     parser.add_argument("--output-dir", default="captured_messages", help="Output directory for messages")
     parser.add_argument("--skip-existing", action="store_true", default=True, help="Skip already processed messages")
+    parser.add_argument("--start-message-id", type=int, default=None, help="Start forwarding from this message ID")
+    parser.add_argument("--end-message-id", type=int, default=None, help="End forwarding at this message ID")
     parser.add_argument("--monitor", action="store_true", help="Continue monitoring for new messages")
     parser.add_argument("--monitor-interval", type=int, default=60, help="Monitoring interval in seconds")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size for processing")
 
     args = parser.parse_args()
 
-    forwarder = TelegramForwarder(args.bot_token, args.channel, args.output_dir)
+    forwarder = TelegramForwarder(args.bot_token, args.channel, args.output_dir, args.start_message_id, args.end_message_id)
 
     try:
         # Authenticate
